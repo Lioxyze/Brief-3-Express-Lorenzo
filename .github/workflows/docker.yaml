@@ -13,10 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build Docker image
         run: |
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/marmiton-api .
+
+      - name: Push Docker image
+        run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/marmiton-api
 
       - name: Ping Render's WebHook
